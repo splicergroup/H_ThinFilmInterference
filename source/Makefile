@@ -4,7 +4,7 @@ ARNOLDLIB := PATH_TO_ARNOLD_INCLUDE_LIB
 
 # if your g++ is located somewhere else
 GXXLOC    := 
-TARGETLOC := ../build/
+TARGETLOC := 
 
 INCLUDES := -I$(ARNOLDINC)
 LDFLAGS  := -L$(ARNOLDLIB) -lai
