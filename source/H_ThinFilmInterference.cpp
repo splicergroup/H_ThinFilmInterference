@@ -1,7 +1,7 @@
 // ---------------------------------------
 // H_ThinFilmInterference
 // By Ryan Hussain
-// Contributer, Chi Chu Chang
+// Contributer, Chi Chang Chu
 // Open sourced under the MIT license
 
 #include <cstring>
