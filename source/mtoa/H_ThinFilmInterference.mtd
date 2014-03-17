@@ -1,0 +1,36 @@
+# H_ThinFilmInterference                   0x00070912
+
+[node H_ThinFilmInterference]
+    maya.name               STRING  "H_ThinFilmInterference"
+    maya.id                 INT      0x00070912
+    maya.classification     STRING  "utility/color"
+    maya.output_name        STRING  "outColor"
+    maya.output_shortname   STRING  "out"
+
+    [attr ior_inside]
+        min                 FLOAT           0
+        softmax             FLOAT           2
+
+    [attr ior_outside]
+        min                 FLOAT           0
+        softmax             FLOAT           2
+
+    [attr min_thick]
+        min                 FLOAT           0
+        softmax             FLOAT           1000
+
+    [attr max_thick]
+        min                 FLOAT           0
+        softmax             FLOAT           1000
+
+    [attr interference]
+        min                 FLOAT           0
+        softmax             FLOAT           1
+
+    [attr color_samples]
+        min                 FLOAT           0
+        softmax             FLOAT           100
+
+    [attr multiplier]
+        min                 FLOAT           0
+        softmax             FLOAT           5
