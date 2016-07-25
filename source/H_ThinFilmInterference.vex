@@ -1,0 +1,125 @@
+// ----------------------------
+// THIN FILM INTERFERENCE MODEL
+//          rhussain
+// ----------------------------
+
+// INPUT VALUES
+vector SURF_P, SURF_N, CAM_P;
+SURF_P = P;
+SURF_N = N;
+CAM_P = Eye;
+
+// USER VALUES
+float IOR_IN, IOR_OUT, INTERFERENCE, MIN_THICK, MAX_THICK;
+int colorSamples;
+
+IOR_IN = $ior_in;
+IOR_OUT = $ior_out;
+MIN_THICK = $minThick;
+MAX_THICK = $maxThick;
+colorSamples = $colSamples;
+INTERFERENCE = 0;
+
+
+// CONSTANTS
+float PI_sq;
+PI_sq = 6.2831853071795862;
+
+
+// ______________________________helper functions______________________________
+
+// H_REFRACT - refraction calculations helper function
+vector H_REFRACT( vector dir; vector normal; float ior_in; float ior_out ) {
+    vector _dir, _normal, _facing, _refractray;
+    float _ior_in, _ior_out, _eta, _k;
+    _dir = dir;
+    _normal = normal;
+    _ior_in = ior_in;
+    _ior_out = ior_out;
+    _eta = _ior_in / _ior_out;    
+
+    // check inside:outside
+    if (dot(_normal, _dir) > 0) {
+        _facing = -_normal;
+        _eta = _ior_out / _ior_in;
+    }
+    else {
+        _facing = _normal;
+    }
+    
+    // check for total internal reflection
+    _k = 1 - pow(_eta, 2) * (1 - pow(dot(_facing, _dir), 2));
+    if (_k < 0) {
+        _refractray = _dir - 2 * dot(_dir, _facing) * _facing;
+    }
+    else {
+        _refractray = _eta * _dir - (_eta * dot(_facing, _dir) + sqrt(_k)) * _facing;
+    }
+
+    return _refractray;
+}
+
+
+// H_SIGNF - returns -1 if float input is less than 0, otherwise 1
+float H_SIGNF( float input ) {
+    float _input;
+    int _sign;
+    _input = input;
+    
+    if (_input == 0) _sign = 0;
+    else if (_input > 0) _sign = 1;
+    else _sign = -1;
+
+    return _sign; 
+}
+
+
+// H_RAMP - constructs a ramp from parameter
+vector H_RAMP(float t0; string basis[]; float keys[]; vector values[])
+{
+    return spline(basis, spline("linearsolve", t0, keys), values);
+}
+
+
+// _______________________________tfi calculation______________________________
+
+vector normI, normN, forwardN, refractray;
+float thickEval;
+
+normI = normalize(CAM_P - SURF_P);
+normN = normalize(SURF_N);
+forwardN = normN * H_SIGNF(dot(normI, normN));
+refractray = H_REFRACT(normI, forwardN, IOR_IN, IOR_OUT);
+thickEval = fit(INTERFERENCE, 0, 1, MIN_THICK, MAX_THICK) * PI_sq * IOR_IN * dot(refractray, forwardN);
+
+// visible spectrum ramp values
+string atten_basis[] = {"linear", "linear", "linear"};
+float  atten_keys[] = {0.0, 0.2093, 0.3233, 0.3698, 0.53255, 0.6837, 1};
+vector atten_values[] = {{0.3,0,0.3}, {0,0,1}, {0,1,1}, {0,1,0}, {1,1,0}, {1,0,0}, {0.3,0,0}};
+
+
+// tfi samples evaluation
+vector constantNone = {0,0,0};
+float toRamp, trig;
+vector valsum, ramp1, outTFI;
+int _i = 0;
+int _end = colorSamples;
+int _step = 1;
+vector _constantNone = constantNone;
+
+for( ; _i <= _end; _i += _step )
+{
+    
+    toRamp = (float)_i / (_end -1);    
+    ramp1 = H_RAMP(toRamp, atten_basis, atten_keys, atten_values);
+    trig = sin(thickEval / fit(toRamp, 0, 1, 350, 780));
+    valsum = _constantNone + ramp1 * trig * trig;
+    _constantNone = valsum;
+}
+
+// tfi output value
+outTFI = ((valsum / colorSamples) * 2) * $tfi_mult;
+
+// set output variables
+$TFI_Cf = outTFI;
+$TFI_N = normN;
