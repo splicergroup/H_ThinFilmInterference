@@ -27,6 +27,7 @@ PI_sq = 6.2831853071795862;
 
 
 // ______________________________helper functions______________________________
+// TODO -- need to move these over to vfl
 
 // H_REFRACT - refraction calculations helper function
 vector H_REFRACT( vector dir; vector normal; float ior_in; float ior_out ) {
