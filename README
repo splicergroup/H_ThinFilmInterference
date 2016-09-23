@@ -1,10 +1,11 @@
-H_ThinFilmInterference
-======================
+=======================================
+H_ThinFilmInterference - PUBLIC RELEASE
+       NON-COMMERCIAL USE ONLY
+=======================================
 By Ryan Hussain
 ryan@splicer.tv
 
-Thin Film Interference utility shader for Arnold, based on the following papers by Andrew Glassner.
-
+Thin Film Interference utility shader for Mantra and Arnold renderers, based on the following papers by Andrew Glassner.
 
 Glassner, A., "Soap bubbles. 1," Computer Graphics and Applications, IEEE , vol.20, no.5, pp.76,84, Sep/Oct 2000
 URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=865884&isnumber=18744
@@ -13,10 +14,9 @@ Glassner, A., "Soap bubbles. 2 [Computer graphics]," Computer Graphics and Appli
 URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=888023&isnumber=19197
 
 
+Notes:
+    This public release is for non-commercial demonstration and demo purposes and does not include the full shading model implementation of the privately maintained H_ThinFilmInterference models.
+
+
 Contributers:
     Chi Chang Chu
-
-
-Special Thanks To:
-    Jep Hill
-    Gong Myung Lee
